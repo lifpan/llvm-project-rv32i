@@ -66,7 +66,7 @@ public:
   RVTinySubtarget &initializeSubtargetDependencies(StringRef CPU,
                                                    StringRef TuneCPU,
                                                    StringRef FS);
-  bool is64Bit() const { return false; }
+  bool is64Bit() const { return Is64Bit; }
 };
 
 } // namespace llvm

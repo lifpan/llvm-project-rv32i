@@ -1,9 +1,9 @@
 #include "RVTiny.h"
 #include "RVTinyMCTargetDesc.h"
-//#include "RVTinyInstPrinter.h"
-//#include "RVTinyMCAsmInfo.h"
-//#include "RVTinyTargetStreamer.h"
-//#include "TargetInfo/RVTinyTargetInfo.h"
+#include "RVTinyInstPrinter.h"
+#include "RVTinyMCAsmInfo.h"
+#include "RVTinyTargetStreamer.h"
+#include "TargetInfo/RVTinyTargetInfo.h"
 #include "llvm/MC/MCInstrAnalysis.h"
 #include "llvm/MC/MCInstrInfo.h"
 #include "llvm/MC/MCRegisterInfo.h"
@@ -22,6 +22,16 @@
 
 using namespace llvm;
 
+static MCAsmInfo *createRVTinyMCAsmInfo(const MCRegisterInfo &MRI,
+                                       const Triple &TT,
+                                       const MCTargetOptions &Options) {
+  MCAsmInfo *MAI = new RVTinyELFMCAsmInfo(TT);
+  unsigned Reg = MRI.getDwarfRegNum(RVTiny::X6, true);
+  MCCFIInstruction Inst = MCCFIInstruction::cfiDefCfa(nullptr, Reg, 0);
+  MAI->addInitialFrameState(Inst);
+  return MAI;
+}
+
 static MCInstrInfo *createRVTinyMCInstrInfo() {
   MCInstrInfo *X = new MCInstrInfo();
   InitRVTinyMCInstrInfo(X);
@@ -32,7 +42,7 @@ static MCRegisterInfo *createRVTinyMCRegisterInfo(const Triple &TT) {
   MCRegisterInfo *X = new MCRegisterInfo();
   return X;
 }
-/*
+
 static MCSubtargetInfo *
 createRVTinyMCSubtargetInfo(const Triple &TT, StringRef CPU, StringRef FS) {
   return createRVTinyMCSubtargetInfoImpl(TT, CPU, CPU, FS);
@@ -52,7 +62,7 @@ static MCInstPrinter *createRVTinyMCInstPrinter(const Triple &T,
   assert(SyntaxVariant == 0);
   return new RVTinyInstPrinter(MAI, MII, MRI);
 }
-*/
+
 namespace {
 
 class RVTinyMCInstrAnalysis : public MCInstrAnalysis {
@@ -68,15 +78,17 @@ static MCInstrAnalysis *createRVTinyInstrAnalysis(const MCInstrInfo *Info) {
 }
 
 extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializeRVTinyTargetMC() {
+  // Register the MC asm info.
+  RegisterMCAsmInfoFn X(getTheRVTinyTarget(), createRVTinyMCAsmInfo);
+
   for (Target *T : {&getTheRVTinyTarget()}) {
-    //RegisterMCAsmInfo<RVTinyMCAsmInfo> X(*T);
     TargetRegistry::RegisterMCInstrInfo(*T, createRVTinyMCInstrInfo);
     TargetRegistry::RegisterMCRegInfo(*T, createRVTinyMCRegisterInfo);
-    //TargetRegistry::RegisterMCSubtargetInfo(*T, createRVTinyMCSubtargetInfo);
-    //TargetRegistry::RegisterMCInstPrinter(*T, createRVTinyMCInstPrinter);
+    TargetRegistry::RegisterMCSubtargetInfo(*T, createRVTinyMCSubtargetInfo);
+    TargetRegistry::RegisterMCInstPrinter(*T, createRVTinyMCInstPrinter);
     //TargetRegistry::RegisterMCInstrAnalysis(*T, createRVTinyInstrAnalysis);
     //TargetRegistry::RegisterMCCodeEmitter(*T, createRVTinyMCCodeEmitter);
     //TargetRegistry::RegisterMCAsmBackend(*T, createRVTinyAsmBackend);
-    //TargetRegistry::RegisterAsmTargetStreamer(*T, createTargetAsmStreamer);
+    TargetRegistry::RegisterAsmTargetStreamer(*T, createTargetAsmStreamer);
   }
 }

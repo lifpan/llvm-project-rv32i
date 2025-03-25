@@ -3,22 +3,12 @@
 #include "RVTinyTargetMachine.h"
 #include "RVTinyMachineFunctionInfo.h"
 #include "RVTinyTargetObjectFile.h"
-//#include "TargetInfo/RVTinyTargetInfo.h"
+#include "TargetInfo/RVTinyTargetInfo.h"
 #include "llvm/CodeGen/Passes.h"
 #include "llvm/CodeGen/TargetPassConfig.h"
 #include "llvm/MC/TargetRegistry.h"
 #include <optional>
 using namespace llvm;
-
-Target &llvm::getTheRVTinyTarget() {
-  static Target TheRVTinyTarget;
-  return TheRVTinyTarget;
-}
-
-extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializeRVTinyTargetInfo() {
-  RegisterTarget<Triple::rvtiny, /*HasJIT=*/false> X(getTheRVTinyTarget(),
-                                                    "rvtiny", "RVTiny", "RVTiny");
-}
 
 extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializeRVTinyTarget() {
   // Register the target.

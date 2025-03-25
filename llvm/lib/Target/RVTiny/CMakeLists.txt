@@ -2,7 +2,7 @@ add_llvm_component_group(RVTiny)
 
 set(LLVM_TARGET_DEFINITIONS RVTiny.td)
 
-#tablegen(LLVM RVTinyGenAsmMatcher.inc -gen-asm-matcher)
+tablegen(LLVM RVTinyGenAsmMatcher.inc -gen-asm-matcher)
 tablegen(LLVM RVTinyGenAsmWriter.inc -gen-asm-writer)
 tablegen(LLVM RVTinyGenCallingConv.inc -gen-callingconv)
 tablegen(LLVM RVTinyGenDAGISel.inc -gen-dag-isel)
@@ -16,6 +16,7 @@ tablegen(LLVM RVTinyGenSubtargetInfo.inc -gen-subtarget)
 add_public_tablegen_target(RVTinyCommonTableGen)
 
 add_llvm_target(RVTinyCodeGen
+  RVTinyAsmPrinter.cpp
   RVTinyFrameLowering.cpp
   RVTinyInstrInfo.cpp
   RVTinyISelDAGToDAG.cpp
@@ -34,7 +35,7 @@ add_llvm_target(RVTinyCodeGen
   MC
   SelectionDAG
   RVTinyDesc
-  #RVTinyInfo
+  RVTinyInfo
   Support
   Target
   TargetParser
@@ -43,7 +44,7 @@ add_llvm_target(RVTinyCodeGen
   RVTiny
   )
 
-#add_subdirectory(AsmParser)
+add_subdirectory(AsmParser)
 #add_subdirectory(Disassembler)
 add_subdirectory(MCTargetDesc)
-#add_subdirectory(TargetInfo)
+add_subdirectory(TargetInfo)

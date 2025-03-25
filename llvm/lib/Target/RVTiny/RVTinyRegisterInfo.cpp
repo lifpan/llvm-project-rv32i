@@ -36,13 +36,13 @@ RVTinyRegisterInfo::getRTCallPreservedMask(CallingConv::ID CC) const {
 
 BitVector
 RVTinyRegisterInfo::getReservedRegs(const MachineFunction &MF) const {
-  BitVector RR;
+  BitVector RR(getNumRegs());
   return RR;
 }
 
 bool RVTinyRegisterInfo::isReservedReg(const MachineFunction &MF,
                                        MCRegister Reg) const {
-  return false;
+  return getReservedRegs(MF)[Reg];
 }
 
 const TargetRegisterClass*

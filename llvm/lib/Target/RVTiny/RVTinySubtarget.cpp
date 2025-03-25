@@ -19,8 +19,6 @@ RVTinySubtarget &RVTinySubtarget::initializeSubtargetDependencies(
     StringRef CPU, StringRef TuneCPU, StringRef FS) {
   // Determine default and user specified characteristics
   std::string CPUName = std::string(CPU);
-  if (CPUName.empty())
-    CPUName = (Is64Bit) ? "v9" : "v8";
 
   if (TuneCPU.empty())
     TuneCPU = CPUName;
