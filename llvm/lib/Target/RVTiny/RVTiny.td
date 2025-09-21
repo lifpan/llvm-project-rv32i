@@ -3,9 +3,9 @@
 include "llvm/Target/Target.td"
 
 
-//def FeatureM
-//  : SubtargetFeature<"M", "hasMul", "true",
-//                     "Enable Mul instructions">;
+def FeatureM
+  : SubtargetFeature<"m", "HasM", "true",
+                     "Enable Mul instructions">;
 
 //===----------------------------------------------------------------------===//
 // Register File, Calling Conv, Instruction Descriptions
@@ -34,7 +34,9 @@ class Proc<string Name, list<SubtargetFeature> Features,
  : Processor<Name, NoItineraries, Features, TuneFeatures>;
 
 def : Proc<"rv32i", []>;
-//def : Proc<"rv32im", [FeatureM]>;
+def : Proc<"rv32im", [FeatureM]>;
+
+//def : ProcessorModel<"rv32", NoSchedModel, []>;
 
 //===----------------------------------------------------------------------===//
 // Declare the target which we are implementing

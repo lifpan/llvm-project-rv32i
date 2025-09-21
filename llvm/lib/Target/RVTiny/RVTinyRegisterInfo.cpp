@@ -20,7 +20,7 @@ RVTinyRegisterInfo::RVTinyRegisterInfo() : RVTinyGenRegisterInfo(0) {}
 
 const MCPhysReg*
 RVTinyRegisterInfo::getCalleeSavedRegs(const MachineFunction *MF) const {
-  return nullptr;
+  return CSR_ILP32E_SaveList;
 }
 
 const uint32_t*

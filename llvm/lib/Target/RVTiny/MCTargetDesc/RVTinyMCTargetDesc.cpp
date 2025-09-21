@@ -45,6 +45,8 @@ static MCRegisterInfo *createRVTinyMCRegisterInfo(const Triple &TT) {
 
 static MCSubtargetInfo *
 createRVTinyMCSubtargetInfo(const Triple &TT, StringRef CPU, StringRef FS) {
+  if (CPU.empty() || CPU == "generic")
+    CPU = TT.isArch64Bit() ? "rv64i" : "rv32i";
   return createRVTinyMCSubtargetInfoImpl(TT, CPU, CPU, FS);
 }
 

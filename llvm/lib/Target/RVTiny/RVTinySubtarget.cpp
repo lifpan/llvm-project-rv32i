@@ -18,6 +18,8 @@ void RVTinySubtarget::anchor() { }
 RVTinySubtarget &RVTinySubtarget::initializeSubtargetDependencies(
     StringRef CPU, StringRef TuneCPU, StringRef FS) {
   // Determine default and user specified characteristics
+  if (CPU.empty() || CPU == "generic")
+    CPU = "rv32i";
   std::string CPUName = std::string(CPU);
 
   if (TuneCPU.empty())
